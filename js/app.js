@@ -5,6 +5,7 @@ const telefono = document.querySelector("#telefono");
 const direccion = document.querySelector("#direccion");
 const tipo = document.querySelector("#tipo");
 const documento = document.querySelector("#documento");
+const boton = document.querySelector("#politicas");
 
 const validar = (event) => {
     event.preventDefault();
@@ -62,7 +63,7 @@ telefono.addEventListener("keyup", (event)=> {
     remover (event, telefono);
 });
 
-direccion.addEventListener("keup", (event)=> {
+direccion.addEventListener("keyup", (event)=> {
     remover (event, direccion);
 });
 
@@ -74,3 +75,39 @@ documento.addEventListener("keyup", (event)=> {
     remover (event, documento);
 });
 
+
+documento.addEventListener("keypress", (event)=> {
+    console.log(event);
+    console.log(this.value);
+});
+
+
+const SoloNumeros = function(event){
+    if (event.keyCode < 48 || event.keyCode > 57)
+        event.preventDefault();
+}
+
+const SoloLetras = (event, elemento)=>{
+    let letras = /^[a-zA-ZÀ-ÿ\s]+$/;
+    if (letras.test(event.key)) {
+        console.log("Si")
+    }
+    else{
+        console.log("No")
+        event.preventDefault();
+    }
+};
+// documento.addEventListener("keypress", function (event) {
+//     console.log(event.keyCode);
+//     if (event.keyCode >= 48 != event.keyCode <= 57) {
+//         event.preventDefault();
+//     };
+// });
+documento.addEventListener("keypress", SoloNumeros);
+telefono.addEventListener("keypress", SoloNumeros);
+nombre.addEventListener("keypress", (event)=>{
+    SoloLetras(event, nombre)
+});
+apellido.addEventListener("keypress", (event)=>{
+    SoloLetras(event, apellido)
+});
