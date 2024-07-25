@@ -9,27 +9,27 @@
 <body>
         <form novalidate>
                 <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" autocomplete="off">
+                <input type="text" id="nombre" autocomplete="off" required>
                 <label for="apellido">Apellido</label>
-                <input type="text" id="apellido" autocomplete="off">
+                <input type="text" id="apellido" autocomplete="off" required>
                 <label for="telefono">Telefono</label>
-                <input type="text" id="telefono" autocomplete="off">
+                <input type="text" id="telefono" autocomplete="off" required>
                 <label for="direccion">Dirección</label>
-                <input type="text" id="direccion" autocomplete="off">
+                <input type="text" id="direccion" autocomplete="off" required>
                 <label for="tipo">Tipo de documento</label>
-                <select name="tipo" id="tipo">
+                <select name="tipo" id="tipo" required>
                     <option value="">Seleccionar</option>
                     <option value="1">Cedula</option>
                     <option value="2">Tarjeta identidad</option>
                 </select>
                 <label for="documento">Documento</label>
-                <input type="text" id="documento" autocomplete="off">
+                <input type="text" id="documento" autocomplete="off" required>
                 <div>
-                    <input type="checkbox" id="politicas">
+                    <input type="checkbox" id="politicas" required>
                     <label for="politicas" id="politicas">Acepta politicas</label>
                 </div>
                 <label for="email">Email</label>
-                <input type="text" id="email" autocomplete="off">
+                <input type="text" id="email" autocomplete="off" required>
                 <button type="submit">Enviar</button>
             </form>
             <script src="js/app.js" type="module"></script>

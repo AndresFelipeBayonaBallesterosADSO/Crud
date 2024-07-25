@@ -1,6 +1,8 @@
 import ValidarCorreo from "./ValidarCorreo.js";
 import SoloNumeros from "./SoloNumeros.js";
 import SoloLetras from "./SoloLetras.js";
+import remover from "./remover.js";
+import is_valid from "./is_valid.js";
 
 const $formulario = document.querySelector('form');
 const nombre = document.querySelector("#nombre");
@@ -15,52 +17,53 @@ const button = document.querySelector("button");
 
 const validar = (event) => {
     event.preventDefault();
-    if (nombre.value === "") {
-        // alert("El nombre es obligatorio");
-        nombre.focus();
-        nombre.classList.add("error");
-    }
-    if (apellido.value === "") {
-        // alert("El apellido es obligatorio");
-        apellido.focus();
-        apellido.classList.add("error");
-    }
-    if (telefono.value === "") {
-        // alert("El telefono es obligatorio");
-        telefono.focus();
-        telefono.classList.add("error");
-    }
-    if (direccion.value === "") {
-        // alert("La dirección es obligatorio");
-        direccion.focus();
-        direccion.classList.add("error");
-    }
-    if (tipo.value === "") {
-        // alert("El tipo de documento es obligatorio");
-        tipo.focus();
-        tipo.classList.add("error");
-    }
-    if (documento.value === "") {
-        // alert("El documento es obligatorio");
-        documento.focus();
-        documento.classList.add("error");
-    }
-    if (email.value === "") {
-        // alert("El correo es obligatorio");
-        email.focus();
-        email.classList.add("error");
-    }
+    console.log(document.querySelectorAll("form  input[required]"));
+    // if (nombre.value === "") {
+    //     // alert("El nombre es obligatorio");
+    //     nombre.focus();
+    //     nombre.classList.add("error");
+    // }
+    // if (apellido.value === "") {
+    //     // alert("El apellido es obligatorio");
+    //     apellido.focus();
+    //     apellido.classList.add("error");
+    // }
+    // if (telefono.value === "") {
+    //     // alert("El telefono es obligatorio");
+    //     telefono.focus();
+    //     telefono.classList.add("error");
+    // }
+    // if (direccion.value === "") {
+    //     // alert("La dirección es obligatorio");
+    //     direccion.focus();
+    //     direccion.classList.add("error");
+    // }
+    // if (tipo.value === "") {
+    //     // alert("El tipo de documento es obligatorio");
+    //     tipo.focus();
+    //     tipo.classList.add("error");
+    // }
+    // if (documento.value === "") {
+    //     // alert("El documento es obligatorio");
+    //     documento.focus();
+    //     documento.classList.add("error");
+    // }
+    // if (email.value === "") {
+    //     // alert("El correo es obligatorio");
+    //     email.focus();
+    //     email.classList.add("error");
+    // }
 }
 
-const remover = (e, input) =>{
-    if (input.value != "") {
-        input.classList.remove("error");
-        input.classList.add("correcto")
-    };
-};
+// const remover = (e, input) =>{
+//     if (input.value != "") {
+//         input.classList.remove("error");
+//         input.classList.add("correcto")
+//     };
+// };
 
 
-$formulario.addEventListener('submit', validar);
+$formulario.addEventListener('submit',is_valid);
 
 nombre.addEventListener("keyup", (event)=> {
     remover (event, nombre);
@@ -104,9 +107,13 @@ politicas.addEventListener("change", (event)=>{
     }
 });
 
+$formulario.addEventListener("submit", (event =>{
+    is_valid(event, "form > [required]")
+})); 
+
 documento.addEventListener("keypress", (event)=> {
     console.log(event);
-    console.log(this.value);
+    // console.log(this.value);
 });
 
 
