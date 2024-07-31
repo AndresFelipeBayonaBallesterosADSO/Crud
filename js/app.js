@@ -63,7 +63,39 @@ const validar = (event) => {
 // };
 
 
-$formulario.addEventListener('submit',is_valid);
+$formulario.addEventListener('submit',(event)=>{
+    let response = is_valid(event, "form [required]");
+
+    const data ={
+        nombre: nombre.value,
+        apellidos: apellido.value,
+        telefono: telefono.value,
+        direccion: direccion.value,
+        tipo: tipo.value,
+        documento: documento.value,
+        email: email.value  
+    }
+    if (response) {
+    fetch('http://localhost:3000/users',{
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',},
+    })
+    .then((response) => response.json())
+    .then(data => {
+        console.log(data);
+        alert("Enviados correcto socio")
+    })
+    .catch(error =>{
+        alert("No fueron enviados socio");
+    })
+    .finally(()=>{
+        document.querySelector("button").disabled = false;
+    });
+    document.querySelector("button").disabled = true;
+}
+});
 
 nombre.addEventListener("keyup", (event)=> {
     remover (event, nombre);
@@ -107,9 +139,7 @@ politicas.addEventListener("change", (event)=>{
     }
 });
 
-$formulario.addEventListener("submit", (event =>{
-    is_valid(event, "form > [required]")
-})); 
+
 
 documento.addEventListener("keypress", (event)=> {
     console.log(event);
