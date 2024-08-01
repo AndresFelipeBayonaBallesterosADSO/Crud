@@ -3,6 +3,7 @@ import SoloNumeros from "./SoloNumeros.js";
 import SoloLetras from "./SoloLetras.js";
 import remover from "./remover.js";
 import is_valid from "./is_valid.js";
+import solicitud from "../form(2)/js/ajax.js";
 
 const $formulario = document.querySelector('form');
 const nombre = document.querySelector("#nombre");
@@ -53,7 +54,7 @@ const validar = (event) => {
     //     email.focus();
     //     email.classList.add("error");
     // }
-}
+};
 
 // const remover = (e, input) =>{
 //     if (input.value != "") {
@@ -61,6 +62,29 @@ const validar = (event) => {
 //         input.classList.add("correcto")
 //     };
 // };
+
+const documentos = (() =>{
+    const fragment = document.createDocumentFragment()
+    fetch('http://localhost:3000/document')
+    .then((response) => response.json())
+    .then(data => {
+
+
+        data.forEach(element => {
+            console.log(element);
+            let option  = document.createElement("option")
+            option.value =  element.id;
+            option.textContent = element.nombre;
+            fragment.appendChild(option);
+        });
+        tipo.appendChild(fragment)
+    });
+});
+
+const listar = (()=>{
+    let  data = solicitud("user");
+    console.log(data);
+});
 
 
 $formulario.addEventListener('submit',(event)=>{
@@ -76,7 +100,7 @@ $formulario.addEventListener('submit',(event)=>{
         email: email.value  
     }
     if (response) {
-    fetch('http://localhost:3000/users',{
+    fetch('http://localhost:3000/user',{
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -88,6 +112,7 @@ $formulario.addEventListener('submit',(event)=>{
         alert("Enviados correcto socio")
     })
     .catch(error =>{
+        console.log(error)
         alert("No fueron enviados socio");
     })
     .finally(()=>{
@@ -126,6 +151,8 @@ email.addEventListener("keyup", (event)=> {
 });
 
 addEventListener("DOMContentLoaded", (event)=>{
+    listar();
+    documentos();
     if(!politicas.checked){
         console.log(button);
         button.setAttribute("disabled", "");
