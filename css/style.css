@@ -5,9 +5,6 @@
 }
 
 form{
-    max-width: 450px;
-    width: 450px;
-    margin: 0 auto;
     background-color: #d3d3d3;
     display: flex;
     flex-direction: column;
@@ -42,4 +39,38 @@ button:hover{
 
 .correcto{
     border: solid 1px rgb(22, 218, 71);
+}
+
+/* .form{
+    max-width: 450px;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    gap: 14px;
+    border-radius: 10px;
+} */
+
+.contenedor_principal {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.mt-40 {
+    margin-top: 40px;
+}
+
+.mb-40 {
+    margin-bottom: 40px;
+}
+
+.layout {
+    display: grid;
+    grid-template-areas: "form grid-container";
+    grid-template-columns: 400px 1fr;
+    gap: 1rem;
+}
+
+.grid-container {
+    
 }

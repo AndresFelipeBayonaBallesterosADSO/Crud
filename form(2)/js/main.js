@@ -1,4 +1,5 @@
 import SoloLetras from "../../js/SoloLetras.js";
+import { URL } from "../../js/config.js";
 import is_valid from "../../js/is_valid.js";
 import remover from "../../js/remover.js";
 
@@ -13,7 +14,7 @@ $formulario.addEventListener('submit',(event)=>{
         nombre: nombre.value,
     }
     if (response) {
-    fetch('http://localhost:3000/document',{
+    fetch('http://localhost:3000/documents',{
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

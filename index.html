@@ -7,7 +7,8 @@
     <title>CRUD</title>
 </head>
 <body>
-        <form novalidate>
+    <div class="contenedor_principal layout mt-40 mb-40">
+        <form class="form" novalidate>
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" autocomplete="off" required>
                 <label for="apellido">Apellido</label>
@@ -29,7 +30,34 @@
                 <label for="email">Email</label>
                 <input type="text" id="email" autocomplete="off" required>
                 <button type="submit" >Enviar</button>
-            </form>
+        </form>
+           <div class="grid-container">
+            <table border="">
+                <thead>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Tipo de documento</th>
+                    <th>Documento</th>
+                    <th>Correo Electrónico</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <template id="tp_users">
+            <tr>
+                <td class="nombre"></td>
+                <td class="apellido"></td>
+                <td class="telefono"></td>
+                <td class="direccion"></td>
+                <td class="tipo"></td>
+                <td class="documento"></td>
+                <td class="email"></td>
+            </tr>
+        </template>
+    </div>
             <script src="js/app.js" type="module"></script>
 </body>
 </html>

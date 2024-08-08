@@ -4,6 +4,7 @@ import SoloLetras from "./SoloLetras.js";
 import remover from "./remover.js";
 import is_valid from "./is_valid.js";
 import solicitud from "../form(2)/js/ajax.js";
+import { URL } from "./config.js";
 
 const $formulario = document.querySelector('form');
 const nombre = document.querySelector("#nombre");
@@ -15,6 +16,12 @@ const documento = document.querySelector("#documento");
 const politicas = document.querySelector("#politicas");
 const email = document.querySelector("#email");
 const button = document.querySelector("button");
+const tbusers = document.querySelector("#tp_users").content;
+const fragmento = document.createDocumentFragment();
+const tbody =  document.querySelector("tbody");
+
+console.log((tbusers));
+
 
 const validar = (event) => {
     event.preventDefault();
@@ -65,26 +72,68 @@ const validar = (event) => {
 
 const documentos = (() =>{
     const fragment = document.createDocumentFragment()
-    fetch('http://localhost:3000/document')
-    .then((response) => response.json())
+    fetch('http://localhost:3000/documents')
+    .then((response) => {
+        return response.json()
+    })
     .then(data => {
-
-
+        let option  = document.createElement("option")
+        option.value = ""
+        option.textContent = "Seleccionar...";
+        fragment.appendChild(option)
         data.forEach(element => {
-            console.log(element);
             let option  = document.createElement("option")
             option.value =  element.id;
             option.textContent = element.nombre;
             fragment.appendChild(option);
         });
-        tipo.appendChild(fragment)
+        tipo.appendChild(fragment);
     });
 });
 
-const listar = (()=>{
-    let  data = solicitud("user");
-    console.log(data);
-});
+const listar = async ()=>{
+    const data = await solicitud("users")
+    data.forEach(element =>{
+        
+        tbusers.querySelector(".nombre").textContent = element.nombre;
+        tbusers.querySelector(".apellido").textContent = element.apellidos;
+        tbusers.querySelector(".telefono").textContent = element.telefono;
+        tbusers.querySelector(".direccion").textContent = element.direccion;
+        tbusers.querySelector(".tipo").textContent = element.tipo;
+        tbusers.querySelector(".documento").textContent = element.documento;
+        tbusers.querySelector(".email").textContent = element.email;
+
+
+        const clone = document.importNode(tbusers, true)
+        fragmento.appendChild(clone);
+    })
+    // fetch('')
+    // let  data = solicitud("users");
+    // console.log(data);
+    tbody.appendChild(fragmento)
+};
+
+const CreateRow = (data) =>{
+    const tr = tbody.insertRow(-1);
+
+    const tdNombre = tr.insertCell(0);
+    const tdApellidos = tr.insertCell(1);
+    const tdTelefono = tr.insertCell(2);
+    const tdDireccion = tr.insertCell(3);
+    const tdTipo = tr.insertCell(4);
+    const tdDocumento = tr.insertCell(5);
+    const tdEmail = tr.insertCell(6);
+
+    tdNombre.textContent = data.nombre;
+    tdApellidos.textContent = data.apellidos;
+    tdTelefono.textContent = data.telefono;
+    tdDireccion.textContent = data.direccion;
+    tdTipo.textContent = data.tipo;
+    tdDocumento.textContent = data.documento;
+    tdEmail.textContent = data.email;
+
+}
+
 
 
 $formulario.addEventListener('submit',(event)=>{
@@ -100,7 +149,7 @@ $formulario.addEventListener('submit',(event)=>{
         email: email.value  
     }
     if (response) {
-    fetch('http://localhost:3000/user',{
+    fetch('http://localhost:3000/users',{
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
@@ -109,11 +158,31 @@ $formulario.addEventListener('submit',(event)=>{
     .then((response) => response.json())
     .then(data => {
         console.log(data);
-        alert("Enviados correcto socio")
-    })
+        alert("Enviados correcto");
+        nombre.value = "";
+        apellido.value = "";
+        telefono.value = "";
+        direccion.value = "";
+        tipo.value = "";
+        documento.value = "";
+        button.checked = false;
+        email.value = "";
+
+
+        nombre.classList.remove("correcto");
+        apellido.classList.remove("correcto");
+        telefono.classList.remove("correcto");
+        direccion.classList.remove("correcto");
+        tipo.classList.remove("correcto");
+        email.classList.remove("correcto");
+        documento.classList.remove("correcto");
+
+        })
     .catch(error =>{
         console.log(error)
-        alert("No fueron enviados socio");
+        alert("No fueron enviados");
+        
+        CreateRow(data);
     })
     .finally(()=>{
         document.querySelector("button").disabled = false;
