@@ -3,7 +3,7 @@ import SoloNumeros from "./SoloNumeros.js";
 import SoloLetras from "./SoloLetras.js";
 import remover from "./remover.js";
 import is_valid from "./is_valid.js";
-import solicitud from "../form(2)/js/ajax.js";
+import solicitud, { enviar } from "../form(2)/js/ajax.js";
 import { URL } from "./config.js";
 
 const $formulario = document.querySelector('form');
@@ -20,7 +20,6 @@ const tbusers = document.querySelector("#tp_users").content;
 const fragmento = document.createDocumentFragment();
 const tbody =  document.querySelector("tbody");
 
-console.log((tbusers));
 
 
 const validar = (event) => {
@@ -92,18 +91,24 @@ const documentos = (() =>{
 });
 
 const listar = async ()=>{
-    const data = await solicitud("users")
+    const data = await solicitud('users')
+    const documentos = await solicitud('documents');
+
     data.forEach(element =>{
+        let nombre = documentos.find((documento)=>documento.id === element.tipo).nombre
+        console.log(nombre);
         
+
         tbusers.querySelector(".nombre").textContent = element.nombre;
         tbusers.querySelector(".apellido").textContent = element.apellidos;
         tbusers.querySelector(".telefono").textContent = element.telefono;
         tbusers.querySelector(".direccion").textContent = element.direccion;
-        tbusers.querySelector(".tipo").textContent = element.tipo;
+        tbusers.querySelector(".tipo").textContent = nombre;
         tbusers.querySelector(".documento").textContent = element.documento;
         tbusers.querySelector(".email").textContent = element.email;
 
-
+        tbusers.querySelector(".modificar").setAttribute("data-id", element.id);
+    
         const clone = document.importNode(tbusers, true)
         fragmento.appendChild(clone);
     })
@@ -219,6 +224,20 @@ email.addEventListener("keyup", (event)=> {
     remover (event, email);
 });
 
+const buscar = async(element) => {
+    let user = await solicitud(`users/${element.dataset.id}`)
+    nombre.value = user.nombre;
+    apellido.value = user.apellidos;
+    telefono.value = user.telefono;
+    direccion.value = user.direccion;
+    tipo.value = user.tipo;
+    documento.value = user.documento;
+    email.value = user.email;
+
+    enviar
+
+}
+
 addEventListener("DOMContentLoaded", (event)=>{
     listar();
     documentos();
@@ -301,4 +320,10 @@ apellido.addEventListener("keypress", (event)=>{
 
 email.addEventListener("blur", (event) => {
     ValidarCorreo(event, email);
+});
+
+document.addEventListener("click", (event)=>{
+    if (event.target.matches(".modificar")) {
+        buscar(event.target);   
+    }
 });
