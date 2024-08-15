@@ -19,6 +19,7 @@ const button = document.querySelector("button");
 const tbusers = document.querySelector("#tp_users").content;
 const fragmento = document.createDocumentFragment();
 const tbody =  document.querySelector("tbody");
+const users =  document.querySelector("#users");
 
 
 
@@ -141,60 +142,59 @@ const CreateRow = (data) =>{
 
 
 
-$formulario.addEventListener('submit',(event)=>{
-    let response = is_valid(event, "form [required]");
+// $formulario.addEventListener('submit',(event)=>{
+//     let response = is_valid(event, "form [required]");
+//     const data ={
+//         nombre: nombre.value,
+//         apellidos: apellido.value,
+//         telefono: telefono.value,
+//         direccion: direccion.value,
+//         tipo: tipo.value,
+//         documento: documento.value,
+//         email: email.value  
+//     }
+//     if (response) {
+//     fetch('http://localhost:3000/users',{
+//         method: 'POST',
+//         body: JSON.stringify(data),
+//         headers: {
+//             'Content-type': 'application/json; charset=UTF-8',},
+//     })
+//     .then((response) => response.json())
+//     .then(data => {
+//         console.log(data);
+//         alert("Enviados correcto");
+//         nombre.value = "";
+//         apellido.value = "";
+//         telefono.value = "";
+//         direccion.value = "";
+//         tipo.value = "";
+//         documento.value = "";
+//         button.checked = false;
+//         email.value = "";
 
-    const data ={
-        nombre: nombre.value,
-        apellidos: apellido.value,
-        telefono: telefono.value,
-        direccion: direccion.value,
-        tipo: tipo.value,
-        documento: documento.value,
-        email: email.value  
-    }
-    if (response) {
-    fetch('http://localhost:3000/users',{
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',},
-    })
-    .then((response) => response.json())
-    .then(data => {
-        console.log(data);
-        alert("Enviados correcto");
-        nombre.value = "";
-        apellido.value = "";
-        telefono.value = "";
-        direccion.value = "";
-        tipo.value = "";
-        documento.value = "";
-        button.checked = false;
-        email.value = "";
 
+//         nombre.classList.remove("correcto");
+//         apellido.classList.remove("correcto");
+//         telefono.classList.remove("correcto");
+//         direccion.classList.remove("correcto");
+//         tipo.classList.remove("correcto");
+//         email.classList.remove("correcto");
+//         documento.classList.remove("correcto");
 
-        nombre.classList.remove("correcto");
-        apellido.classList.remove("correcto");
-        telefono.classList.remove("correcto");
-        direccion.classList.remove("correcto");
-        tipo.classList.remove("correcto");
-        email.classList.remove("correcto");
-        documento.classList.remove("correcto");
-
-        })
-    .catch(error =>{
-        console.log(error)
-        alert("No fueron enviados");
+//         })
+//     .catch(error =>{
+//         console.log(error)
+//         alert("No fueron enviados");
         
-        CreateRow(data);
-    })
-    .finally(()=>{
-        document.querySelector("button").disabled = false;
-    });
-    document.querySelector("button").disabled = true;
-}
-});
+//         CreateRow(data);
+//     })
+//     .finally(()=>{
+//         document.querySelector("button").disabled = false;
+//     });
+//     document.querySelector("button").disabled = true;
+// }
+// });
 
 nombre.addEventListener("keyup", (event)=> {
     remover (event, nombre);
@@ -225,18 +225,90 @@ email.addEventListener("keyup", (event)=> {
 });
 
 const buscar = async(element) => {
-    let user = await solicitud(`users/${element.dataset.id}`)
-    nombre.value = user.nombre;
-    apellido.value = user.apellidos;
-    telefono.value = user.telefono;
-    direccion.value = user.direccion;
-    tipo.value = user.tipo;
-    documento.value = user.documento;
-    email.value = user.email;
+    let data = await enviar(`users/${element.dataset.id}`,{
+        method: 'PATCH',
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    });
+    loadForm(data);
+};
 
-    enviar
 
+const save = (event) => {
+    const data = {
+        nombre:nombre.value,
+        apellidos : apellido.value,
+        telefono : telefono.value,
+        direccion : direccion.value,
+        tipo: tipo.value,
+        documento: documento.value,
+        email: email.value
 }
+if (response) {
+    if (users.value === "") {
+        guardar(data)
+    }else{
+        actualiza(data)
+    }
+}
+}
+
+const guardar = (data) =>{
+    console.log(data);
+    return
+    fetch(`${URL}/users`,{
+        method : 'POST',
+        body : JSON.stringify(data),
+        headers : {
+            'content-type' : 'application/json; charset=UTF-8',
+        },
+    })
+    .then((reponse) => response.json())
+    .then((json) => {
+        nombre.value ="";
+        CreateRow(json)
+    });
+}
+
+const actualiza = async (data) =>{
+    const actual = await enviar(`user/${users.value}`,{
+        method: 'Put',
+        body: JSON.stringify(data),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        },
+    })
+    console.log(actual);
+};
+
+
+
+const loadForm = (data) => {
+    const {
+        id,
+        nombre : name,
+        apellidos: last_name,
+        telefono: phone,
+        direccion:address ,
+        tipo: type,
+        documento : document,
+        email : e_mail,
+    } = data;
+
+    users.value = id;
+    nombre.value = name;
+    apellido.value = last_name;
+    telefono.value = phone;
+    direccion.value = address;
+    tipo.value = type;
+    documento.value = document;
+    email.value = e_mail;
+    politicas.checked = true;
+    button.removeAttribute("disabled")
+} 
+
+$formulario.addEventListener("submit" ,save)
 
 addEventListener("DOMContentLoaded", (event)=>{
     listar();
@@ -253,8 +325,6 @@ politicas.addEventListener("change", (event)=>{
         button.removeAttribute("disabled")
     }
 });
-
-
 
 documento.addEventListener("keypress", (event)=> {
     console.log(event);
