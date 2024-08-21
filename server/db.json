@@ -1,0 +1,20 @@
+{
+  "users": [
+    {
+      "nombre": "Andresito",
+      "apellidos": "Bayona",
+      "telefono": "3208911903",
+      "direccion": "Carrera 14",
+      "tipo": "bdd4",
+      "documento": "1095700205",
+      "email": "andresbayona408@gmail.com",
+      "id": "40e0"
+    }
+  ],
+  "documents": [
+    {
+      "id": "bdd4",
+      "nombre": "Cedula"
+    }
+  ]
+}

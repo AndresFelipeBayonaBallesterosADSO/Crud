@@ -22,10 +22,9 @@ const tbody =  document.querySelector("tbody");
 const users =  document.querySelector("#users");
 
 
-
-const validar = (event) => {
-    event.preventDefault();
-    console.log(document.querySelectorAll("form  input[required]"));
+// const validar = (event) => {
+//     event.preventDefault();
+//     console.log(document.querySelectorAll("form  input[required]"));
     // if (nombre.value === "") {
     //     // alert("El nombre es obligatorio");
     //     nombre.focus();
@@ -61,7 +60,7 @@ const validar = (event) => {
     //     email.focus();
     //     email.classList.add("error");
     // }
-};
+// };
 
 // const remover = (e, input) =>{
 //     if (input.value != "") {
@@ -97,8 +96,8 @@ const listar = async ()=>{
 
     data.forEach(element =>{
         let nombre = documentos.find((documento)=>documento.id === element.tipo).nombre
-        console.log(nombre);
-        
+
+        tbusers.querySelector("tr").id = `user_${element.id}`
 
         tbusers.querySelector(".nombre").textContent = element.nombre;
         tbusers.querySelector(".apellido").textContent = element.apellidos;
@@ -109,6 +108,7 @@ const listar = async ()=>{
         tbusers.querySelector(".email").textContent = element.email;
 
         tbusers.querySelector(".modificar").setAttribute("data-id", element.id);
+        tbusers.querySelector(".eliminar").setAttribute("data-id", element.id);
     
         const clone = document.importNode(tbusers, true)
         fragmento.appendChild(clone);
@@ -139,7 +139,6 @@ const CreateRow = (data) =>{
     tdEmail.textContent = data.email;
 
 }
-
 
 
 // $formulario.addEventListener('submit',(event)=>{
@@ -236,6 +235,9 @@ const buscar = async(element) => {
 
 
 const save = (event) => {
+    let response  = is_valid(event,"form[required]");
+    event.preventDefault();
+    
     const data = {
         nombre:nombre.value,
         apellidos : apellido.value,
@@ -255,8 +257,6 @@ if (response) {
 }
 
 const guardar = (data) =>{
-    console.log(data);
-    return
     fetch(`${URL}/users`,{
         method : 'POST',
         body : JSON.stringify(data),
@@ -267,22 +267,61 @@ const guardar = (data) =>{
     .then((reponse) => response.json())
     .then((json) => {
         nombre.value ="";
+        limpiarForm();
         CreateRow(json)
     });
 }
 
 const actualiza = async (data) =>{
-    const actual = await enviar(`user/${users.value}`,{
-        method: 'Put',
+    const response = await enviar(`users/${users.value}`,{
+        method: 'PUT',
         body: JSON.stringify(data),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         },
     })
-    console.log(actual);
+    limpiarForm();
+    editRow(response);
 };
 
+const limpiarForm = () =>{
+    nombre.value = "";
+    apellido.value = "";
+    telefono.value = "";
+    direccion.value = "";
+    tipo.value = "";
+    documento.value = "";
+    email.value = "";
+    politicas.checked = false;
+    
+    nombre.classList.remove("correcto");
+    apellido.classList.remove("correcto");
+    telefono.classList.remove("correcto");
+    direccion.classList.remove("correcto");
+    tipo.classList.remove("correcto");
+    documento.classList.remove("correcto");
+    email.classList.remove("correcto");
+    tipo.classList.remove("correcto");
+}
 
+const editRow = (data) =>{
+    const tr = document.querySelector(`#user_${data.id}`);
+    tr.querySelector(".nombre").textContent = data.nombre;
+    tr.querySelector(".apellido").textContent = data.apellidos;
+    tr.querySelector(".telefono").textContent = data.telefono;
+    tr.querySelector(".direccion").textContent = data.direccion;
+    tr.querySelector(".tipo").textContent = data.tipo;
+    tr.querySelector(".documento").textContent = data.documento;
+    tr.querySelector(".email").textContent = data.email;
+    
+}
+
+
+const deleteFormUsuario = (data) => {
+    fetch(`users/${data.id}`,{
+        method: 'DELETE',
+    })
+}
 
 const loadForm = (data) => {
     const {
@@ -314,7 +353,6 @@ addEventListener("DOMContentLoaded", (event)=>{
     listar();
     documentos();
     if(!politicas.checked){
-        console.log(button);
         button.setAttribute("disabled", "");
     };
 });
@@ -395,5 +433,11 @@ email.addEventListener("blur", (event) => {
 document.addEventListener("click", (event)=>{
     if (event.target.matches(".modificar")) {
         buscar(event.target);   
+    }
+});
+
+document.addEventListener("click", (event)=>{
+    if (event.target.matches(".eliminar")) {
+        deleteFormUsuario(event.target);   
     }
 });
