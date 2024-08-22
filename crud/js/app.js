@@ -317,10 +317,19 @@ const editRow = (data) =>{
 }
 
 
-const deleteFormUsuario = (data) => {
-    fetch(`users/${data.id}`,{
-        method: 'DELETE',
-    })
+const deleteFormUsuario = (event, element) => {
+    const tr = element.parentNode.parentNode.parentNode;
+  if (confirm("¿Desea eliminar el registro?")) {
+    enviar(`users/${element.dataset.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }).then((data) => {
+      alert(`El usuario ${data.first_name} fue eliminado con éxito`);
+       tr.remove();
+    });
+  }
 }
 
 const loadForm = (data) => {
