@@ -90,11 +90,31 @@ const documentos = (() =>{
     });
 });
 
-const listar = async ()=>{
-    const data = await solicitud('users')
+const listar = async (page)=>{
+    const _page = page ? page : 1;
+    const data = await solicitud(`users?_page=${_page}&_per_page=8`)
     const documentos = await solicitud('documents');
 
-    data.forEach(element =>{
+    const nav =  document.querySelector(".navigation");
+    const first = data.first;
+    const prev = data.prev;
+    const next = data.next;
+    const last = data.last;
+
+    nav.querySelector(".first").disabled = prev ? false : true;
+    nav.querySelector(".prev").disabled = prev ? false : true;
+    nav.querySelector(".next").disabled = next ? false : true;
+    nav.querySelector(".last").disabled = next ? false : true;
+
+    // nav.querySelector(".first").setAttribute("disabled" ,"");
+    // nav.querySelector(".prev").setAttribute("disabled" ,"");
+    
+    nav.querySelector(".first").setAttribute("data-first" , first);
+    nav.querySelector(".prev").setAttribute("data-prev" , prev);
+    nav.querySelector(".next").setAttribute("data-next" , next);
+    nav.querySelector(".last").setAttribute("data-last" , last);    
+
+    data.data.forEach(element =>{
         let nombre = documentos.find((documento)=>documento.id === element.tipo).nombre
 
         tbusers.querySelector("tr").id = `user_${element.id}`
@@ -139,7 +159,6 @@ const CreateRow = (data) =>{
     tdEmail.textContent = data.email;
 
 }
-
 
 // $formulario.addEventListener('submit',(event)=>{
 //     let response = is_valid(event, "form [required]");
@@ -195,34 +214,6 @@ const CreateRow = (data) =>{
 // }
 // });
 
-nombre.addEventListener("keyup", (event)=> {
-    remover (event, nombre);
-});
-
-apellido.addEventListener("keyup", (event)=> {
-    remover (event, apellido);
-});
-
-telefono.addEventListener("keyup", (event)=> {
-    remover (event, telefono);
-});
-
-direccion.addEventListener("keyup", (event)=> {
-    remover (event, direccion);
-});
-
-tipo.addEventListener("change", (event)=> {
-    remover (event, tipo);
-});
-
-documento.addEventListener("keyup", (event)=> {
-    remover (event, documento);
-});
-
-email.addEventListener("keyup", (event)=> {
-    remover (event, email);
-});
-
 const buscar = async(element) => {
     let data = await enviar(`users/${element.dataset.id}`,{
         method: 'PATCH',
@@ -232,7 +223,6 @@ const buscar = async(element) => {
     });
     loadForm(data);
 };
-
 
 const save = (event) => {
     let response  = is_valid(event,"form[required]");
@@ -264,7 +254,7 @@ const guardar = (data) =>{
             'content-type' : 'application/json; charset=UTF-8',
         },
     })
-    .then((reponse) => response.json())
+    .then((response) => response.json())
     .then((json) => {
         nombre.value ="";
         limpiarForm();
@@ -317,19 +307,21 @@ const editRow = (data) =>{
 }
 
 
-const deleteFormUsuario = (event, element) => {
-    const tr = element.parentNode.parentNode.parentNode;
-  if (confirm("¿Desea eliminar el registro?")) {
-    enviar(`users/${element.dataset.id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    }).then((data) => {
-      alert(`El usuario ${data.first_name} fue eliminado con éxito`);
-       tr.remove();
-    });
-  }
+const deleteFormUsuario =async (element) => {
+    let id = element.dataset.id;
+    const tr = document.querySelector(`#user_${id}`);
+    const username =  tr.querySelector(".nombre").textContent;
+    const confirmDelete = confirm(`Desear eliminar a: ${username}`);
+
+    if (confirmDelete) {
+        const response = await enviar(`users/${id}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-type': 'application/json; charset=UTF.8',
+            },
+        });
+        tr.remove();
+    }
 }
 
 const loadForm = (data) => {
@@ -423,6 +415,34 @@ documento.addEventListener("keypress", (event)=> {
 //         event.preventDefault();
 //     };
 // });
+nombre.addEventListener("keyup", (event)=> {
+    remover (event, nombre);
+});
+
+apellido.addEventListener("keyup", (event)=> {
+    remover (event, apellido);
+});
+
+telefono.addEventListener("keyup", (event)=> {
+    remover (event, telefono);
+});
+
+direccion.addEventListener("keyup", (event)=> {
+    remover (event, direccion);
+});
+
+tipo.addEventListener("change", (event)=> {
+    remover (event, tipo);
+});
+
+documento.addEventListener("keyup", (event)=> {
+    remover (event, documento);
+});
+
+email.addEventListener("keyup", (event)=> {
+    remover (event, email);
+});
+
 documento.addEventListener("keypress", SoloNumeros);
 
 telefono.addEventListener("keypress", SoloNumeros);
@@ -443,10 +463,41 @@ document.addEventListener("click", (event)=>{
     if (event.target.matches(".modificar")) {
         buscar(event.target);   
     }
-});
-
-document.addEventListener("click", (event)=>{
     if (event.target.matches(".eliminar")) {
         deleteFormUsuario(event.target);   
+    }
+    if (event.target.matches(".first")) {
+        const nodos = tbody;
+        const first = event.target.dataset.first;                
+        while (nodos.firstChild) {
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(first)
+    }
+    if (event.target.matches(".prev")) {
+        const nodos = tbody;
+        const prev = event.target.dataset.prev;                
+        while (nodos.firstChild) {
+            nodos.removeChild(nodos.firstChild)
+        }
+        listar(prev)
+    }
+    if (event.target.matches(".next")) {
+        const nodos = tbody;
+        const next = event.target.dataset.next;                
+        while (nodos.firstChild) {
+            nodos.removeChild(nodos.firstChild)
+        }
+
+        listar(next);
+    }
+    if (event.target.matches(".last")) {
+        const nodos = tbody;
+        const last = event.target.dataset.last;                
+        while (nodos.firstChild) {
+            nodos.removeChild(nodos.firstChild)
+        }
+
+        listar(last);
     }
 });
